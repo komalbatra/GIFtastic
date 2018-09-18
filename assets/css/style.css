@@ -1,0 +1,13 @@
+body {
+    background-image: url("../images/background4.jpg");
+    font-family:'Righteous', cursive;
+    color: white;
+}
+
+.topic {
+    margin: 10px;
+}
+
+.buttons-view {
+    border: solid;
+}
