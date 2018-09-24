@@ -1,3 +1,4 @@
+<!-- Homework #6 - GIFTASTIC -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,23 +18,30 @@
 <body>
         
     <div class="container">
-            <h2>Super Hero GIFtastic</h2>
+        <h2>Super Hero GIFtastic!</h2>
+        <h6>*Click on a SuperHero Button to see some interesting GIFs. *Add your own SuperHero Button. *Double-Click a Button to delete a SuperHero Button</h6>
            
-        <!-- Rendered buttons will get dumped Here  -->
-        <div class="buttons-view"></div>
-    
-        <form id="hero-form">
-          <label for="hero-input">Add a Super Hero!</label>
-          <input type="text" class="form-control col-3" id="hero-input"><br>
-    
-          <!-- Button triggers new hero to be added -->
-          <input class="btn btn-warning" id="add-hero" type="submit" value="Submit">
-        </form>
-    
-        <!-- Heros will get dumped here -->
-        <div id="hero-view"></div>
-
+        <!-- Div for Buttons  -->
+        <div class = "row">
+            <div class="buttons-view"></div>
+        </div>
+        
+        <div class = "row">
+            <div class="col-lg-9 container-fluid">
+                <!-- Info from API call will be added here -->
+                <div id="hero-view"></div>
+            </div>
+            <!-- Div for the form and submit button-->
+            <div class="col-lg-3">
+                <form id="hero-form">
+                <label for="hero-input">Add a Super Hero!</label>
+                <input type="text" class="form-control col-12" id="hero-input"><br>
+                <input class="btn btn-warning" id="add-hero" type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
     </div>
+
     <!-- JQuery & Javascript file Links -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="assets/javascript/app.js"></script>

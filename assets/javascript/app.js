@@ -1,105 +1,125 @@
 // JS file for HOMEWORK #6
 
-// $(document).ready(function() {
-    // Declaring Initial Array for Topics
-    var topics = ["Superman", "Aquaman", "Spiderman", "Batman", "Wonder Woman"];
+$(document).ready(function() {
+    // Declaring Initial Array of Topics which is a list of Super Heroes
+    var topics = ['Superman', 'Aquaman', 'Spiderman', 'Batman', 'Wonder Woman', 'Thor', 'Hulk', 'Black Panther', 'Iron Man'];
 
-    // FUNCTIONS
-    //function to display topic buttons
+    /// ALL FUNCTIONS
+
+    //Function to display info on the topics by calling an API and retrieving the info 
     function displayInfo(){
-      $("#hero-view").empty();
-      var topic = $(this).attr("data-name");
-      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=jVz8LzEOLKTNPSj1tux4I40dP1PX6Pbg&limit=10";
+      $('#hero-view').empty();
+      var topic = $(this).attr('data-name');
+      var queryURL = 'https://api.giphy.com/v1/gifs/search?q=' + topic + '&api_key=jVz8LzEOLKTNPSj1tux4I40dP1PX6Pbg&limit=10';
 
       // AJAX call to GET information 
       $.ajax({
         url: queryURL,
         method: "GET"
-        
       })
       .then(function(response) {
-        console.log(queryURL);
-        console.log (response);
-
-        // Creating a div to hold hero information
+        // If no information on topics is found, the alert the user
+        if (response.pagination.total_count == 0) {
+          alert('Sorry, there are no Gifs for this topic');
+          var itemindex = topics.indexOf(topic);
+          // otherwise display button
+          if (itemindex > -1) {
+            topics.splice(itemindex, 1);
+            renderButtons();
+            }
+        }
+        
+        // Save response from API call (JSON) to a variable results
         var results = response.data;
-
         for (var j = 0; j < results.length; j++){
-        var newTopicDiv = $("<div class='hero-name'>");
-        
-        // Storing the rating data
-        var rating = results[j];
-        console.log (rating);
-                
-        // Creating an element to have the rating displayed
-        var pRating = $("<p>").text("Rating: " + results[j].rating);
-
-        // Displaying the rating
-        newTopicDiv.append(pRating);
-
-        // Retrieving the URL for the GIF
-        var gifURL = results[j].images.fixed_height_still.url;
-
-        // // Creating an element to hold the GIF
-        var gif = $("<img>").attr("src", gifURL);
-
-        // // Appending the image
-        newTopicDiv.append(gif);
-
-        // Putting the entire movie above the previous movies <-----
-        $("#hero-view").prepend(newTopicDiv);
-        }  
+          // Create new Div
+          var newTopicDiv = $("<div class='hero-name'>");
+          // Save responses from API into variables and add to DOM
+          // GIF Rating
+          var pRating = $('<p>').text('Rating: ' + results[j].rating.toUpperCase());
+          // GIF Title
+          var pTitle = $('<p>').text('Title: ' + results[j].title.toUpperCase());
+          // GIF URL
+          var gifURL = results[j].images.fixed_height_still.url;         
+          var gif = $('<img>');
+          gif.attr('src', gifURL);
+          gif.attr('data-still', results[j].images.fixed_height_still.url);
+          gif.attr('data-animate', results[j].images.fixed_height.url);
+          gif.attr('data-state', 'still');
+          gif.addClass ('animate-gif');
+          // Appending info 
+          newTopicDiv.append(pRating);
+          newTopicDiv.append(pTitle);
+          newTopicDiv.append(gif);
+           // Putting the saved info to new div
+          $('#hero-view').prepend(newTopicDiv);
+        } 
       });
-        // .catch(function(error){
-        //   throw error
-        //   console.log(error);
-        // });
-        
-    }
-           
+    };
+    
     // Function for displaying buttons
     function renderButtons() {
       // Deletes the movies prior to adding new movies
-      $(".buttons-view").empty();
-
-      // Loops through the array of movies
+      $('.buttons-view').empty();
+      // Loops through the array of topics to create buttons for all topics
       for (var i = 0; i < topics.length; i++) {
-
-        // Then dynamicaly generates buttons for each movie in the array
-        // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
-        var createButtons = $("<button>");
-        // Adds a class of movie to our button
-        createButtons.addClass("topic btn btn-info");
-        // Added a data-attribute
-        createButtons.attr("data-name", topics[i]);
-        // Provided the initial button text
+        var createButtons = $('<button>');
+        createButtons.addClass('topic btn btn-info');
+        createButtons.attr('data-name', topics[i]);
         createButtons.text(topics[i]);
-        // Added the button to the buttons-view div
-        $(".buttons-view").append(createButtons);
+        $('.buttons-view').append(createButtons);
       }
     }
 
+    // Function to remove buttons
+    function removeButton(){
+      $("#hero-view").empty();
+      var topic = $(this).attr('data-name');
+      var itemindex = topics.indexOf(topic);
+      if (itemindex > -1) {
+        topics.splice(itemindex, 1);
+        renderButtons();
+      }
+    }
 
-    //CLICK EVENTS
-    // This function handles events where the add movie button is clicked  <----------
+    // Function to play or still Gif images
+    function playGif () {
+      var state = $(this).attr('data-state');
+      if (state === 'still') {
+        $(this).attr('src', $(this).attr('data-animate'));
+        $(this).attr('data-state', 'animate');
+      }
+      else {
+        $(this).attr('src' , $(this).attr('data-still'));
+        $(this).attr('data-state', 'still');
+      }
+    }
+
+    ///EVENT LISTENERS aka CLICK EVENTS
+    // Click on the submit button to add a new hero button
     $("#add-hero").on("click", function(event) {
       event.preventDefault();
-      // This line of code will grab the input from the textbox
+      // capture input from the form
       var hero = $("#hero-input").val().trim();
-
-      // The movie from the textbox is then added to our array
-      topics.push(hero);
-
-      // Calling renderButtons which handles the processing of our movie array
-      renderButtons();
-
+      // check if topic exsits already
+      if (topics.toString().toLowerCase().indexOf(hero.toLowerCase()) != -1) {
+        alert("Topic already exists");
+      }
+      else {
+        topics.push(hero);
+        renderButtons();
+      }
     });
 
-    // Adding click event listeners to all elements with a class of "movie"
+    // Click on hero button to display Gifs and other info from API
     $(document).on("click", ".topic", displayInfo);
+    // Click on the Gif image to animate or make it still
+    $(document).on("click", ".animate-gif", playGif);
+    // Double-click on any hero button to remove it from the array. Tried this for the first time.
+    $(document).on("dblclick", ".topic", removeButton);
 
     // Calling the renderButtons function to display the intial buttons
     renderButtons();
 
 
-// }); //PAGE CLOSING BRACKET
+}); //PAGE CLOSING BRACKET
