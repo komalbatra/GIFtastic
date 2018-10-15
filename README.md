@@ -1,5 +1,5 @@
 # GIFtastic
-Homework # 6
+
 
 ### **Creator:** `Komal Batra`
 **Type of Project:** `API`
